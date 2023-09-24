@@ -29,8 +29,7 @@ radio.onReceivedValue(function (name, value) {
             log_indicator = false
             basic.showIcon(IconNames.No)
         } else {
-            log_indicator = false
-            basic.showIcon(IconNames.Square)
+        	
         }
     }
 })
@@ -39,18 +38,20 @@ let log_indicator = false
 radio.setGroup(21)
 log_indicator = false
 let display = grove.createDisplay(DigitalPin.P1, DigitalPin.P15)
-datalogger.setColumnTitles("Steering Angle")
-basic.showIcon(IconNames.SmallSquare)
+datalogger.includeTimestamp(FlashLogTimeStampFormat.Milliseconds)
+datalogger.setColumnTitles("Angle - Steering")
+basic.showIcon(IconNames.SmallDiamond)
 basic.forever(function () {
-    radio.sendValue("angle_signal", pins.map(
-    pins.digitalReadPin(DigitalPin.P0),
+    let angle_signal = ""
+    radio.sendValue(angle_signal, pins.map(
+    pins.analogReadPin(AnalogPin.P0),
     0,
     1023,
     0,
     180
     ))
     display.show(pins.map(
-    pins.digitalReadPin(DigitalPin.P0),
+    0,
     0,
     1023,
     0,
@@ -58,8 +59,8 @@ basic.forever(function () {
     ))
     if (log_indicator) {
         led.toggle(0, 0)
-        datalogger.log(datalogger.createCV("Steering Angle", pins.map(
-        pins.digitalReadPin(DigitalPin.P0),
+        datalogger.log(datalogger.createCV("Angle - Steering", pins.map(
+        pins.analogReadPin(AnalogPin.P0),
         0,
         1023,
         0,

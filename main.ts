@@ -39,10 +39,20 @@ radio.setGroup(21)
 log_indicator = false
 let display = grove.createDisplay(DigitalPin.P1, DigitalPin.P15)
 datalogger.includeTimestamp(FlashLogTimeStampFormat.Milliseconds)
-datalogger.setColumnTitles("Angle - Steering")
+datalogger.setColumnTitles(
+"Angle - Steering",
+"Time"
+)
 basic.showIcon(IconNames.SmallDiamond)
 basic.forever(function () {
     let angle_signal = ""
+    display.show(pins.map(
+    pins.analogReadPin(AnalogPin.P0),
+    0,
+    1023,
+    0,
+    180
+    ))
     radio.sendValue(angle_signal, pins.map(
     pins.analogReadPin(AnalogPin.P0),
     0,
@@ -50,21 +60,17 @@ basic.forever(function () {
     0,
     180
     ))
-    display.show(pins.map(
-    0,
-    0,
-    1023,
-    0,
-    180
-    ))
     if (log_indicator) {
         led.toggle(0, 0)
-        datalogger.log(datalogger.createCV("Angle - Steering", pins.map(
+        datalogger.log(
+        datalogger.createCV("Angle - Steering", pins.map(
         pins.analogReadPin(AnalogPin.P0),
         0,
         1023,
         0,
         180
-        )))
+        )),
+        datalogger.createCV("Time", timeanddate.time(timeanddate.TimeFormat.HHMM24hr))
+        )
     }
 })

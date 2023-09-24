@@ -13,26 +13,13 @@ input.onButtonPressed(Button.A, function () {
     radio.sendValue(log_control, 1)
     log_indicator = true
     basic.showIcon(IconNames.Yes)
-    datalogger.log(datalogger.createCV("Angle - Steering", 1234567890))
+    datalogger.log(datalogger.createCV("Angle - Steering", 123.123))
 })
 input.onButtonPressed(Button.B, function () {
     log_indicator = false
     radio.sendValue(log_control, 2)
     basic.showIcon(IconNames.No)
-})
-radio.onReceivedValue(function (name, value) {
-    if (name == log_control) {
-        if (value == 1) {
-            timeanddate.set24HourTime(0, 0, 0)
-            log_indicator = true
-            basic.showIcon(IconNames.Yes)
-        } else if (value == 2) {
-            log_indicator = false
-            basic.showIcon(IconNames.No)
-        } else {
-        	
-        }
-    }
+    datalogger.log(datalogger.createCV("Angle - Steering", 321.321))
 })
 let value = 0
 let log_control = ""
@@ -58,7 +45,6 @@ loops.everyInterval(100, function () {
     0,
     180
     )
-    display.show(value)
     radio.sendValue(angle_signal, value)
     if (log_indicator) {
         led.toggle(0, 0)
@@ -67,4 +53,5 @@ loops.everyInterval(100, function () {
         datalogger.createCV("Time", timeanddate.dateTime())
         )
     }
+    display.show(value)
 })

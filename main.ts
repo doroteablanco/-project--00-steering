@@ -25,6 +25,7 @@ radio.onReceivedValue(function (name, value) {
             timeanddate.set24HourTime(0, 0, 0)
             log_indicator = true
             basic.showIcon(IconNames.Yes)
+            datalogger.log(datalogger.createCV("Angle - Actuator 1", 1234567890))
         } else if (value == 2) {
             log_indicator = false
             basic.showIcon(IconNames.No)
@@ -35,7 +36,10 @@ radio.onReceivedValue(function (name, value) {
     if (name == angle_signal) {
         if (log_indicator) {
             led.toggle(0, 0)
-            datalogger.log(datalogger.createCV("Angle - Actuator 1", value))
+            datalogger.log(
+            datalogger.createCV("Angle - Actuator 1", value),
+            datalogger.createCV("Time", timeanddate.dateTime())
+            )
         }
         display.show(value)
     }
@@ -48,11 +52,14 @@ radio.setGroup(21)
 log_indicator = false
 display = grove.createDisplay(DigitalPin.P1, DigitalPin.P15)
 datalogger.includeTimestamp(FlashLogTimeStampFormat.Milliseconds)
-datalogger.setColumnTitles("Angle - Actuator 1")
+datalogger.setColumnTitles(
+"Angle - Actuator 1",
+"Time"
+)
 basic.showIcon(IconNames.SmallDiamond)
 basic.forever(function () {
     radio.sendValue(angle_signal, pins.map(
-    pins.digitalReadPin(DigitalPin.P0),
+    pins.analogReadPin(AnalogPin.P0),
     0,
     1023,
     0,
